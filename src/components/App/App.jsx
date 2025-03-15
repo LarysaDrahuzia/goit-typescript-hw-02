@@ -27,7 +27,7 @@ const App = () => {
       setIsLoading(true);
       try {
         const { results, total_pages } = await fetchImages(query, page);
-        console.log('data', data);
+
         if (!results.length) {
           setIsEmpty(true);
           return;
