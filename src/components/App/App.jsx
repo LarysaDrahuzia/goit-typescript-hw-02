@@ -6,6 +6,8 @@ import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import Loader from '../Loader/Loader';
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
+import ImageModal from '../ImageModal/ImageModal';
+import css from './App.module.css';
 
 const App = () => {
   const [query, setQuery] = useState('');
@@ -15,19 +17,22 @@ const App = () => {
   const [error, setError] = useState(null);
   const [isEmpty, setIsEmpty] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [modalSrc, setModalSrc] = useState(null);
+  const [modalAlt, setModalAlt] = useState('');
 
   useEffect(() => {
     if (!query) return;
     const getData = async () => {
       setIsLoading(true);
       try {
-        const { photos, total_pages } = await fetchImages(query, page);
-
-        if (!photos.length) {
+        const { results, total_pages } = await fetchImages(query, page);
+        console.log('data', data);
+        if (!results.length) {
           setIsEmpty(true);
           return;
         }
-        setImages(prevImages => [...prevImages, ...photos]);
+        setImages(prevImages => [...prevImages, ...results]);
         setIsVisible(page < total_pages);
       } catch (error) {
         setError(true);
@@ -52,16 +57,68 @@ const App = () => {
     setPage(prevPage => prevPage + 1);
   };
 
+  const openModal = (src, alt) => {
+    setIsOpen(true);
+    setModalSrc(src);
+    setModalAlt(alt);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+    setModalSrc(null);
+    setModalAlt('');
+  };
+
   return (
     <>
       <SearchBar onSubmit={handleSearch} />
-      <ImageGallery images={images} />
-      {/* {!error && !isEmpty && !images.length && toast('Let`s begin search')} */}
+
+      {!error && !isEmpty && !images.length && (
+        <p className={css.textStart}>Let`s begin search!</p>
+      )}
 
       {isLoading && <Loader />}
       {error && <ErrorMessage />}
-      <LoadMoreBtn onClick={handleLoadMoreClick} />
-      <Toaster position="relative" reverseOrder={true} />
+      {images.length > 0 && (
+        <ImageGallery images={images} openModal={openModal} />
+      )}
+
+      {isVisible && (
+        <LoadMoreBtn
+          onClick={handleLoadMoreClick}
+          disabled={isLoading}
+        ></LoadMoreBtn>
+      )}
+
+      {isEmpty && (
+        <p className={css.text}>Sorry, nothing was found for your query!</p>
+      )}
+      <ImageModal
+        modalIsOpen={modalIsOpen}
+        closeModal={closeModal}
+        src={modalSrc}
+        alt={modalAlt}
+      />
+
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          style: {
+            background: '#333',
+            color: '#fff',
+          },
+          success: {
+            style: {
+              background: 'green',
+            },
+          },
+          error: {
+            style: {
+              background: 'red',
+            },
+          },
+        }}
+      />
     </>
   );
 };

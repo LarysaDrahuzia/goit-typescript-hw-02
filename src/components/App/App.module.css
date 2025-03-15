@@ -1,0 +1,13 @@
+.textStart,
+.text {
+  text-align: center;
+}
+
+.textStart {
+  color: blue;
+  font-weight: 600;
+}
+
+.text {
+  color: red;
+}
