@@ -1,7 +1,21 @@
 import css from './ImageCard.module.css';
 import GridItem from '../GridItem/GridItem';
+import { FC } from 'react';
 
-const ImageCard = ({ alt_description, urls, openModal }) => {
+type ImageCardProps = {
+  alt_description: string;
+  urls: {
+    small: string;
+    regular: string;
+  };
+  openModal: (src: string, alt: string) => void;
+};
+
+const ImageCard: FC<ImageCardProps> = ({
+  alt_description,
+  urls,
+  openModal,
+}) => {
   return (
     <GridItem>
       <div className={css.thumb}>

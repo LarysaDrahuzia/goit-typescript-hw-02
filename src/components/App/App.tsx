@@ -1,29 +1,30 @@
 import { useState, useEffect } from 'react';
 import { fetchImages } from '../../unsplash-api';
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import SearchBar from '../SearchBar/SearchBar';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import Loader from '../Loader/Loader';
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
 import ImageModal from '../ImageModal/ImageModal';
+import { Image } from './App.types';
 import css from './App.module.css';
 
 const App = () => {
-  const [query, setQuery] = useState('');
-  const [page, setPage] = useState(1);
-  const [images, setImages] = useState([]);
+  const [query, setQuery] = useState<string>('');
+  const [page, setPage] = useState<number>(1);
+  const [images, setImages] = useState<Image[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [isEmpty, setIsEmpty] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const [modalIsOpen, setIsOpen] = useState(false);
-  const [modalSrc, setModalSrc] = useState(null);
-  const [modalAlt, setModalAlt] = useState('');
+  const [error, setError] = useState<boolean | null>(null);
+  const [isEmpty, setIsEmpty] = useState<boolean>(false);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
+  const [modalSrc, setModalSrc] = useState<string | null>(null);
+  const [modalAlt, setModalAlt] = useState<string>('');
 
   useEffect(() => {
     if (!query) return;
-    const getData = async () => {
+    const getData = async (): Promise<void> => {
       setIsLoading(true);
       try {
         const { results, total_pages } = await fetchImages(query, page);
@@ -44,7 +45,7 @@ const App = () => {
     getData();
   }, [query, page]);
 
-  const handleSearch = topic => {
+  const handleSearch = (topic: string): void => {
     setQuery(topic);
     setPage(1);
     setImages([]);
@@ -53,17 +54,17 @@ const App = () => {
     setIsVisible(false);
   };
 
-  const handleLoadMoreClick = () => {
+  const handleLoadMoreClick = (): void => {
     setPage(prevPage => prevPage + 1);
   };
 
-  const openModal = (src, alt) => {
+  const openModal = (src: string, alt: string): void => {
     setIsOpen(true);
     setModalSrc(src);
     setModalAlt(alt);
   };
 
-  const closeModal = () => {
+  const closeModal = (): void => {
     setIsOpen(false);
     setModalSrc(null);
     setModalAlt('');

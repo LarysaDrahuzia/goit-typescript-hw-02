@@ -1,9 +1,22 @@
 import Modal from 'react-modal';
 import css from './ImageModal.module.css';
+import { FC } from 'react';
 
 Modal.setAppElement('#root');
 
-const ImageModal = ({ modalIsOpen, closeModal, src, alt }) => {
+type ImageModalProps = {
+  src: string | null;
+  alt: string;
+  modalIsOpen: boolean;
+  closeModal: () => void;
+};
+
+const ImageModal: FC<ImageModalProps> = ({
+  modalIsOpen,
+  closeModal,
+  src,
+  alt,
+}) => {
   return (
     <Modal
       isOpen={modalIsOpen}
@@ -12,7 +25,7 @@ const ImageModal = ({ modalIsOpen, closeModal, src, alt }) => {
       overlayClassName={css.overlay}
       contentLabel="Example Modal"
     >
-      <img className={css.img} src={src} alt={alt} />
+      {src && <img className={css.img} src={src} alt={alt} />}
       <p className={css.text}>{alt}</p>
     </Modal>
   );
