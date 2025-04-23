@@ -7,15 +7,18 @@ export const fetchImages = async (
   query: string,
   page: number
 ): Promise<UnsplashResponse> => {
-  const { data } = await axios.get('https://api.unsplash.com/search/photos', {
-    params: {
-      query,
-      page,
-      per_page: 15,
-      orientation: 'landscape',
-    },
-    headers: { Authorization: `Client-ID ${accessKey}` },
-  });
+  const { data } = await axios.get<UnsplashResponse>(
+    'https://api.unsplash.com/search/photos',
+    {
+      params: {
+        query,
+        page,
+        per_page: 15,
+        orientation: 'landscape',
+      },
+      headers: { Authorization: `Client-ID ${accessKey}` },
+    }
+  );
 
   return data;
 };
